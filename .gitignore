@@ -1,0 +1,8 @@
+.vscode/
+lt/
+al/
+/asciivideo
+/libs.o
+/stb_image.h
+/stb_image_resize.h
+/miniaudio.h
