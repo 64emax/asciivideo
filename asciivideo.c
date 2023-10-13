@@ -1,17 +1,14 @@
 #include <stdio.h>
+#ifndef __USE_MISC
+#define __USE_MISC
+#endif
 #include <unistd.h>
-#include <sys/time.h>
 #include <sys/ioctl.h>
 #include <signal.h>
+
 #include "stb_image.h"
 #include "stb_image_resize.h"
 #include "miniaudio.h"
-
-size_t timenow() {
-	struct timeval time;
-	gettimeofday(&time, NULL);
-	return time.tv_usec;
-}
 
 const char *chrlist = "    ```...---'':::___,,,^^===;;;>>><<<++!!!rrrccc**///zzz???ssLLLTTTvvv)))JJ777(((|||FFiii{{{CCC}}}ffIII333111ttllluuu[[[nneeeoooZZZ555YYxxxjjjyyyaa]]]222EEESSwwwqqqkkkPPP66hhh999ddd44VVVpppOOOGGGbbUUUAAAKKKXXHHHmmm888RRDDD###$$$BBBgg000MMMNNNWWQQQ%%%&&&@@";
 
@@ -33,7 +30,6 @@ int main(int argc, char **argv) {
 	
 	sprintf(path, "%s/audio.mp3", argv[1]);
 	ma_engine_play_sound(&engine, path, NULL);
-	
 
 	size_t FPS = 60; //TODO: mayhaps don't hardcode
 	size_t DT = (1.f/FPS)*1000000.f;
