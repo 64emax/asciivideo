@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 			nocolor = true;
 		}
 	}
-	
+
 	char path[256];
 	sprintf(path, "%s/audio.mp3", argv[1]);
 
@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 		ioctl(0, TIOCGWINSZ, &w);
 		OUTW = w.ws_col;
 		OUTH = w.ws_row;
-		
+
 		stbi_uc rimg[OUTW*OUTH*3];
 
 		stbi_uc *img = stbi_load(path, &imgw, &imgh, NULL, 3);
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 
 		printf("\033[0;0H");
 		for (size_t i = 0; i < OUTW*OUTH*3; i+=3) {
-			if (prevcol == (size_t)(rimg[i+2] << 16 | rimg[i+1] << 8 | rimg[i]) || nocolor) {
+			if (nocolor || prevcol == (size_t)(rimg[i+2] << 16 | rimg[i+1] << 8 | rimg[i])) {
 				printf("%c", chrlist[(rimg[i]+rimg[i+1]+rimg[i+2])/3]);
 			}
 			else {

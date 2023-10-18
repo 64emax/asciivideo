@@ -20,14 +20,16 @@ so um it doesnt really do this itself yet so you have to decompose the video in 
 so yea make sure you have ffmpeg for this
 
 1. make a new folder of desired name
+
 2. go to it
-```sh
-cd your_folder
-```
+    ```sh
+    cd your_folder
+    ```
+
 3. do it
-```sh
-ffmpeg -i /path/to/your/video -r 60 %d.png audio.mp3
-```
+    ```sh
+    ffmpeg -i /path/to/your/video -r 60 %d.png audio.mp3
+    ```
 
 you can now go back to the main directory and run the program
 ```sh
