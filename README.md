@@ -8,19 +8,8 @@ made in c so it actually...  you know... runs at a usable speed
 
 ## how
 simple
-1. steal libraries (don't worry they're open source)
 ```sh
-wget https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
-wget https://raw.githubusercontent.com/nothings/stb/master/deprecated/stb_image_resize.h
-wget https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h
-```
-2. compile libraries
-```sh
-cc -O3 -c libs.c -o libs.o
-```
-3. compile main program
-```sh
-cc -O3 asciivideo.c -o asciivideo -lm libs.o
+./build.sh
 ```
 
 ## ok but how
