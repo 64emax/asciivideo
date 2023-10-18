@@ -2,6 +2,7 @@
 vid/
 /asciivideo
 /libs.o
+/libs.c
 /stb_image.h
 /stb_image_resize.h
 /miniaudio.h
