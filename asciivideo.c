@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdbool.h>
 #include <sys/ioctl.h>
 #include <signal.h>
 #include <sys/time.h>
+#define UNUSED __attribute__((unused))
 
 #include "stb_image.h"
 #include "stb_image_resize.h"
@@ -11,7 +14,7 @@
 const char *chrlist = "    ```...---'':::___,,,^^===;;;>>><<<++!!!rrrccc**///zzz???ssLLLTTTvvv)))JJ777(((|||FFiii{{{CCC}}}ffIII333111ttllluuu[[[nneeeoooZZZ555YYxxxjjjyyyaa]]]222EEESSwwwqqqkkkPPP66hhh999ddd44VVVpppOOOGGGbbUUUAAAKKKXXHHHmmm888RRDDD###$$$BBBgg000MMMNNNWWQQQ%%%&&&@@";
 
 size_t frame = 1;
-void incframe(int signum) {
+void incframe(UNUSED int signum) {
 	frame++;
 }
 
@@ -21,12 +24,19 @@ int main(int argc, char **argv) {
 		exit(69);
 	}
 
+	bool nocolor = false;
+	if (argc > 2) {
+		if (strcmp(argv[2], "-nc") == 0 || strcmp(argv[2], "--no-color") == 0) {
+			nocolor = true;
+		}
+	}
+	
+	char path[256];
+	sprintf(path, "%s/audio.mp3", argv[1]);
+
 	ma_engine engine;
 	ma_engine_init(NULL, &engine);
 
-	char path[256];
-
-	sprintf(path, "%s/audio.mp3", argv[1]);
 	ma_engine_play_sound(&engine, path, NULL);
 
 	size_t FPS = 60; //TODO: mayhaps don't hardcode
@@ -47,13 +57,7 @@ int main(int argc, char **argv) {
 	struct winsize w;
 	size_t OUTW, OUTH;
 
-	while(1){
-		ioctl(0, TIOCGWINSZ, &w);
-		OUTW = w.ws_col;
-		OUTH = w.ws_row;
-
-		stbi_uc rimg[OUTW*OUTH*3];
-
+	while (true) {
 		sprintf(path, "%s/%lu.png", argv[1], frame);
 		if (access(path, F_OK) == -1) {
 			ma_engine_uninit(&engine);
@@ -64,13 +68,19 @@ int main(int argc, char **argv) {
 			return 0;
 		}
 
+		ioctl(0, TIOCGWINSZ, &w);
+		OUTW = w.ws_col;
+		OUTH = w.ws_row;
+		
+		stbi_uc rimg[OUTW*OUTH*3];
+
 		stbi_uc *img = stbi_load(path, &imgw, &imgh, NULL, 3);
 		stbir_resize_uint8(img, imgw, imgh, 0, rimg, OUTW, OUTH, 0, 3);
 		stbi_image_free(img);
 
 		printf("\033[0;0H");
 		for (size_t i = 0; i < OUTW*OUTH*3; i+=3) {
-			if (prevcol == (rimg[i+2] << 16 | rimg[i+1] << 8 | rimg[i])) {
+			if (prevcol == (size_t)(rimg[i+2] << 16 | rimg[i+1] << 8 | rimg[i]) || nocolor) {
 				printf("%c", chrlist[(rimg[i]+rimg[i+1]+rimg[i+2])/3]);
 			}
 			else {
