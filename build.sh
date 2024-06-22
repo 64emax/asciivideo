@@ -1,4 +1,4 @@
-if ! [ -f ./libs.o ]; then
+if ! [ -f ./libs.o ] || [ "$1" == "all" ]; then
     wget -nc https://raw.githubusercontent.com/nothings/stb/master/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/deprecated/stb_image_resize.h https://raw.githubusercontent.com/mackron/miniaudio/master/miniaudio.h
 
     echo '
@@ -10,7 +10,7 @@ if ! [ -f ./libs.o ]; then
     #include "miniaudio.h"
     ' > libs.c
 
-    cc -O3 -c libs.c -o libs.o
+    cc -O3 -c libs.c -o libs.o -lpthread
 fi
 
 cc -Wall -Wextra -O3 asciivideo.c -o asciivideo -lm libs.o

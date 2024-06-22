@@ -5,7 +5,6 @@
 #include <sys/ioctl.h>
 #include <signal.h>
 #include <sys/time.h>
-#define UNUSED __attribute__((unused))
 
 #include "stb_image.h"
 #include "stb_image_resize.h"
@@ -14,7 +13,7 @@
 const char *chrlist = "    ```...---'':::___,,,^^===;;;>>><<<++!!!rrrccc**///zzz???ssLLLTTTvvv)))JJ777(((|||FFiii{{{CCC}}}ffIII333111ttllluuu[[[nneeeoooZZZ555YYxxxjjjyyyaa]]]222EEESSwwwqqqkkkPPP66hhh999ddd44VVVpppOOOGGGbbUUUAAAKKKXXHHHmmm888RRDDD###$$$BBBgg000MMMNNNWWQQQ%%%&&&@@";
 
 size_t frame = 1;
-void incframe(UNUSED int signum) {
+void incframe(int) {
 	frame++;
 }
 
@@ -42,14 +41,11 @@ int main(int argc, char **argv) {
 	size_t FPS = 60; //TODO: mayhaps don't hardcode
 	size_t DT = (1.f/FPS)*1000000.f;
 
-	timer_t t;
-	timer_create(CLOCK_REALTIME, NULL, &t);
-
-	struct itimerspec h = {
-		.it_interval.tv_nsec = DT,
-		.it_value.tv_nsec = DT,
+	struct itimerval h = { // ok posix
+		.it_interval.tv_usec = DT,
+		.it_value.tv_usec = DT,
 	};
-	setitimer(0, (struct itimerval * restrict) &h, NULL);
+	setitimer(0, &h, NULL);
 	signal(SIGALRM, incframe);
 
 	size_t prevcol = 0;
